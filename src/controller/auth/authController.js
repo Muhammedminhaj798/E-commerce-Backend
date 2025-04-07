@@ -1,8 +1,9 @@
-import userSchema from "../../model/schema/userSchema";
-import customError from "../../utils/customErr";
+import User from '../../model/schema/userSchema.js'
+import customError from '../../utils/customErr.js';
 import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
-import joischema from "../../model/joischema/validation"
+import bcrypt from 'bcryptjs';
+import { joiUserSchema } from '../../model/joischema/validation.js';
+import { joiUserLogin } from '../../model/joischema/validation.js';
 
 const createToken = (id, isAdmin) => {
     return jwt.sign({ id, isAdmin }, process.env.JWT_TOKEN, {
@@ -11,18 +12,21 @@ const createToken = (id, isAdmin) => {
 };
 
 const createRefreshToken = (id, isAdmin) => {
-    return jwt.sign({ id, isAdmin }, process.env.JWT_REFRESH_TOKEN, {
+    return jwt.sign({ id,isAdmin  }, process.env.JWT_REFRESH_TOKEN, {
         expiresIn: "14d",
     });
 };
-const UserReg = async (req, res, next) => {
-   const {value, error} = joischema.joiUserSchema.validate(req.body);
+export const UserReg = async (req, res, next) => {
+
+   const {value, error} = joiUserSchema.validate(req.body);
+   
+   
    if (error) {
     return next(new customError(error.details[0].message, 400));
    }
 
    const { name, email, password ,confirmpassword} = value;
-   const existUser = await userSchema.findOne({ email });
+   const existUser = await User.findOne({ email });
    if (existUser) {
     return next(new customError("User already exist", 400));
    }
@@ -33,8 +37,8 @@ const UserReg = async (req, res, next) => {
 
    const salt = await bcrypt.genSalt(10);
    const hashedPassword = await bcrypt.hash(password, salt);
-   const newUser = new userSchema({
-     name,
+   const newUser = new User({
+    name,
     email,
     password: hashedPassword, 
    });
@@ -43,11 +47,12 @@ const UserReg = async (req, res, next) => {
    res.status(200).json({
     message: "User registered successfully",
     status: "success",
+    data: newUser,
    })
 }
 
 const UserLogin = async (req, res, next) => {
-    const {value, error} = joischema.joiUserLogin.validate(req.body); 
+    const {value, error} = joiUserLogin.validate(req.body); 
     if (error) {
         return res.status(400).json({
             message: error.details[0].message,
@@ -56,7 +61,7 @@ const UserLogin = async (req, res, next) => {
     }
     const { email, password } = value;
 
-    const userData = await userSchema.findOne({ email });
+    const userData = await User.findOne({ email });
     if (!userData) {
         return next(new customError("user not found", 400));
     }
@@ -75,17 +80,25 @@ const UserLogin = async (req, res, next) => {
     const token = createToken(userData._id, userData.isAdmin);
     const refreshToken = createRefreshToken(userData._id, userData.isAdmin);
 
-    res.cookie("refreshToken", refreshToken, {
+    res.cookie("token", token, {
        httpOnly: true,
        secure: true,
        sameSite: "lax",
        maxAge: 7 * 24 * 60 * 60 * 1000,
     })
+    
+    res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "lax",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+     })
 
     res.status(200).json({
         message: "User logged in successfully",
         isAdmin: userData.isAdmin,
         token,
+        data: userData,
     });
     
 }
@@ -104,4 +117,10 @@ const userLogout = async (req, res, next) => {
     });
 }
 
-export { UserReg, UserLogin, userLogout };
+const home = async (req, res, next) => {
+    res.status(200).json({
+        message: "User home page",
+        status: "success",
+    }); 
+}
+export {  UserLogin, userLogout,home };

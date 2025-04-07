@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -27,6 +28,11 @@ const userSchema = new mongoose.Schema({
   refreshToken: {
     type: String,
   },
-},{timestamps:true});
+  isDeleted: {
+    type: Boolean,
+    default: false,
+  },
+}, { timestamps: true });
 
-export default mongoose.model("User", userSchema);
+const User = mongoose.model("User", userSchema);
+export default User;
