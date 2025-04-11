@@ -3,6 +3,8 @@ import tryCatch from "../middleware/tryCatch.js";
 import { getAllProduct, getProductById, getProductType } from "../controller/user/userProductController.js";
 import { getUSerCart, removeFromCart, updateUserCart } from "../controller/user/UserCartController.js";
 import verifyToken from "../middleware/authentication.js";
+import { addToWishlist, getUserWishlist, removeFromWishlist } from "../controller/user/userWishlistController.js";
+import { getAllOrders,getOneOrder, cancelOneOrder } from "../controller/user/userOrderController.js"
 
 const router = express.Router();
 //get all products/type/id
@@ -13,6 +15,13 @@ router.get("/getAllProducts",tryCatch(getAllProduct))
 .get("/getUserCart",verifyToken,tryCatch(getUSerCart))
 .post("/updateUserCart",verifyToken,tryCatch(updateUserCart))
 .delete("/removeFromCart",verifyToken,tryCatch(removeFromCart))
-
+//wishlist routes
+.get("/getUserWishlist",verifyToken,tryCatch(getUserWishlist))
+.post("/addToWishlist",verifyToken,tryCatch(addToWishlist))
+.delete("/removeFromWishlist",verifyToken,tryCatch(removeFromWishlist))
+//order routes
+.get("/getAllOrders",verifyToken,tryCatch(getAllOrders))
+.get("/getOneOrder/:id",verifyToken,tryCatch(getOneOrder))
+.patch("/cancelOneOrder/:id",verifyToken,tryCatch(cancelOneOrder))
 
 export default router;
