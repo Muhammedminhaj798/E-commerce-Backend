@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import authRouter from "./src/routes/authRouter.js";
 import cookieParser from "cookie-parser";
 import userRoutes from "./src/routes/userRoutes.js";
+import manageError from "./src/middleware/mangeError.js";
 
 dotenv.config();
 
@@ -20,7 +21,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRoutes);
-
+app.use(manageError)
 mongoose
   .connect(process.env.MONGOOSE)
   .then(() => console.log(" Connected to MongoDB"))

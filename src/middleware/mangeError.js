@@ -1,4 +1,4 @@
-import customError from "../utils/customErr";
+import customError from "../utils/customErr.js";
 
 const manageError = (err, req, res, next) => {
     console.log(err);

@@ -4,7 +4,7 @@ import { getAllProduct, getProductById, getProductType } from "../controller/use
 import { getUSerCart, removeFromCart, updateUserCart } from "../controller/user/UserCartController.js";
 import verifyToken from "../middleware/authentication.js";
 import { addToWishlist, getUserWishlist, removeFromWishlist } from "../controller/user/userWishlistController.js";
-import { getAllOrders,getOneOrder, cancelOneOrder } from "../controller/user/userOrderController.js"
+import { cancelOneOrder, getAllOrders, getOneOrder } from "../controller/user/userOrderController.js";
 
 const router = express.Router();
 //get all products/type/id

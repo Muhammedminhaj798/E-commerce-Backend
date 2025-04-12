@@ -52,4 +52,6 @@ const cancelOneOrder = async (req, res, next) => {
   })
 };
 
-export default { getAllOrders, getOneOrder, cancelOneOrder };
+
+
+export  { getAllOrders, getOneOrder, cancelOneOrder };
