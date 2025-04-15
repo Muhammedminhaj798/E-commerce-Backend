@@ -4,7 +4,7 @@ import customError from "../utils/customErr.js";
 const verifyToken = (req, res, next) => {
     try {
         
-        const token =req.cookies.token;
+        const token = req.cookies.token;
         
         if(!token) {
             return next(new customError("You are not authenticated", 403));

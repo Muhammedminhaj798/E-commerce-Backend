@@ -1,7 +1,7 @@
 import express from "express";
 import tryCatch from "../middleware/tryCatch.js";
 import { getAllProduct, getProductById, getProductType } from "../controller/user/userProductController.js";
-import { getUSerCart, removeFromCart, updateUserCart } from "../controller/user/UserCartController.js";
+import { getUSerCart, removeFromCart, takingApi, updateUserCart } from "../controller/user/UserCartController.js";
 import verifyToken from "../middleware/authentication.js";
 import { addToWishlist, getUserWishlist, removeFromWishlist } from "../controller/user/userWishlistController.js";
 import { cancelOneOrder, getAllOrders, getOneOrder } from "../controller/user/userOrderController.js";
@@ -24,4 +24,6 @@ router.get("/getAllProducts",tryCatch(getAllProduct))
 .get("/getOneOrder/:id",verifyToken,tryCatch(getOneOrder))
 .patch("/cancelOneOrder/:id",verifyToken,tryCatch(cancelOneOrder))
 
+
+.get("/takeTitle",tryCatch(takingApi))
 export default router;

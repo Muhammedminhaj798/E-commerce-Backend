@@ -10,6 +10,7 @@ const getAllProduct = async(req,res) =>{
     })
 }
 
+
 const getProductType = async(req,res) =>{
     const type = req.params.type
     const productType = await productSchema.find({type: type})
