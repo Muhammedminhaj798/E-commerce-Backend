@@ -1,28 +1,30 @@
 import express from "express";
 import tryCatch from "../middleware/tryCatch.js";
-import { getAllProduct, getProductById, getProductType } from "../controller/user/userProductController.js";
+import { getAllProduct, getFilterProduct, getProductById, getProductType, getSearchProduct } from "../controller/user/userProductController.js";
 import { getUSerCart, removeFromCart, takingApi, updateUserCart } from "../controller/user/UserCartController.js";
-import verifyToken from "../middleware/authentication.js";
+import { user_auth } from "../middleware/authentication.js";
 import { addToWishlist, getUserWishlist, removeFromWishlist } from "../controller/user/userWishlistController.js";
 import { cancelOneOrder, getAllOrders, getOneOrder } from "../controller/user/userOrderController.js";
 
 const router = express.Router();
-//get all products/type/id
+//get all products/type/id/filter
 router.get("/getAllProducts",tryCatch(getAllProduct))
 .get("/getProductType/:type",tryCatch(getProductType))
 .get("/getProductById/:id",tryCatch(getProductById))
+.get('/getFilterProduct',tryCatch(getFilterProduct))
+.get('/getSearchProduct', tryCatch(getSearchProduct))
 //cart routes
-.get("/getUserCart",verifyToken,tryCatch(getUSerCart))
-.post("/updateUserCart",verifyToken,tryCatch(updateUserCart))
-.delete("/removeFromCart",verifyToken,tryCatch(removeFromCart))
+.get("/getUserCart",user_auth,tryCatch(getUSerCart))
+.post("/updateUserCart",user_auth,tryCatch(updateUserCart))
+.delete("/removeFromCart",user_auth,tryCatch(removeFromCart))
 //wishlist routes
-.get("/getUserWishlist",verifyToken,tryCatch(getUserWishlist))
-.post("/addToWishlist",verifyToken,tryCatch(addToWishlist))
-.delete("/removeFromWishlist",verifyToken,tryCatch(removeFromWishlist))
+.get("/getUserWishlist",user_auth,tryCatch(getUserWishlist))
+.post("/addToWishlist",user_auth,tryCatch(addToWishlist))
+.delete("/removeFromWishlist",user_auth,tryCatch(removeFromWishlist))
 //order routes
-.get("/getAllOrders",verifyToken,tryCatch(getAllOrders))
-.get("/getOneOrder/:id",verifyToken,tryCatch(getOneOrder))
-.patch("/cancelOneOrder/:id",verifyToken,tryCatch(cancelOneOrder))
+.get("/getAllOrders",user_auth,tryCatch(getAllOrders))
+.get("/getOneOrder/:id",user_auth,tryCatch(getOneOrder))
+.patch("/cancelOneOrder/:id",user_auth,tryCatch(cancelOneOrder))
 
 
 .get("/takeTitle",tryCatch(takingApi))

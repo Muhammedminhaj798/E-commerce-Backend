@@ -1,8 +1,68 @@
 import mongoose from "mongoose";
 import customError from "../../utils/customErr.js";
-// import productSchema from "../../model/schema/productSchema.js";
-// import cartSchema from "../../model/schema/cartSchema.js";
 import orderSchema from "../../model/schema/orderSchema.js";
+import Cart from "../../model/schema/cartSchema.js"
+import productSchema from "../../model/schema/productSchema.js";
+import Stripe from "stripe";
+
+
+const createOrder = async (req, res, next) => {
+  try{
+    const userId = req.user.id;
+
+    if(!userId){
+      return next(new customError("User not Authenticated", 401))
+    }
+
+    const cart = await Cart.findOne({user : userId}).populate("products.product");
+
+    if(!cart){
+      return next(new customError("Cart data not founded", 404))
+    }
+
+    const totalPrice = cart.productSchema.reduce((total, item) => {
+      const price = parseFloat(item.productSchema.price);
+      const quantity = parseInt(item.quantity)
+      return total + (price * quantity)
+    },0);
+
+    const line_items = cart.products.map((item) => ({
+      price_data:{
+        currency: 'inr',
+        product_data: {
+          name : item.productSchema.name,
+          image : [item.productSchema.image],
+        },
+        unit_amount: Math.round(item.productSchema.price * 100),
+      },
+      quantity : item.quantity
+    }));
+     //create a session in stripe
+    const stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY)
+
+    const session = await stripeClient.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: line_items,
+      mode: 'payment',
+      ui_mode:'embedded',
+      // return_url: `${process.env.FRONTEND_URL}/CheckoutSuccess/{}`
+    })
+
+    //Create a new order
+    const newOrder = new orderSchema({
+      userId,
+      productSchema : cart.productSchema.map((item) => ({
+        
+      }))
+    })
+  }catch{
+
+  }
+}
+
+
+
+
 
 const getAllOrders = async (req, res, next) => {
   const newOrder = await orderSchema

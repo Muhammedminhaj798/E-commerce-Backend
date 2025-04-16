@@ -98,6 +98,7 @@ const UserLogin = async (req, res, next) => {
         message: "User logged in successfully",
         isAdmin: userData.isAdmin,
         token,
+        refreshToken,
         data: userData,
     });
     
