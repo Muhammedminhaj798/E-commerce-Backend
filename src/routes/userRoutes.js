@@ -1,10 +1,10 @@
 import express from "express";
 import tryCatch from "../middleware/tryCatch.js";
 import { getAllProduct, getFilterProduct, getProductById, getProductType, getSearchProduct } from "../controller/user/userProductController.js";
-import { getUSerCart, removeFromCart, takingApi, updateUserCart } from "../controller/user/UserCartController.js";
+import { getUSerCart, removeFromCart, updateUserCart } from "../controller/user/UserCartController.js";
 import { user_auth } from "../middleware/authentication.js";
 import { addToWishlist, getUserWishlist, removeFromWishlist } from "../controller/user/userWishlistController.js";
-import { cancelOneOrder, getAllOrders, getOneOrder } from "../controller/user/userOrderController.js";
+import { cancelOneOrder, createOrder, getAllOrders, getOneOrder, verify_order } from "../controller/user/userOrderController.js";
 
 const router = express.Router();
 //get all products/type/id/filter
@@ -22,10 +22,10 @@ router.get("/getAllProducts",tryCatch(getAllProduct))
 .post("/addToWishlist",user_auth,tryCatch(addToWishlist))
 .delete("/removeFromWishlist",user_auth,tryCatch(removeFromWishlist))
 //order routes
-.get("/getAllOrders",user_auth,tryCatch(getAllOrders))
-.get("/getOneOrder/:id",user_auth,tryCatch(getOneOrder))
-.patch("/cancelOneOrder/:id",user_auth,tryCatch(cancelOneOrder))
+.get('/getAllOrders',user_auth,tryCatch(getAllOrders))
+.get('/getOneOrder/:id', user_auth,tryCatch(getOneOrder))
+.put('/cancelOneOrder',user_auth,tryCatch(cancelOneOrder))
+.post('/createOrder',user_auth,tryCatch(createOrder))
+.put('/verify_order',user_auth,tryCatch(verify_order))
 
-
-.get("/takeTitle",tryCatch(takingApi))
-export default router;
+export default router

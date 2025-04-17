@@ -1,68 +1,115 @@
 import mongoose from "mongoose";
 import customError from "../../utils/customErr.js";
 import orderSchema from "../../model/schema/orderSchema.js";
-import Cart from "../../model/schema/cartSchema.js"
+import cartSchema from "../../model/schema/cartSchema.js";
 import productSchema from "../../model/schema/productSchema.js";
 import Stripe from "stripe";
 
-
 const createOrder = async (req, res, next) => {
-  try{
-    const userId = req.user.id;
-
-    if(!userId){
-      return next(new customError("User not Authenticated", 401))
-    }
-
-    const cart = await Cart.findOne({user : userId}).populate("products.product");
-
-    if(!cart){
-      return next(new customError("Cart data not founded", 404))
-    }
-
-    const totalPrice = cart.productSchema.reduce((total, item) => {
-      const price = parseFloat(item.productSchema.price);
-      const quantity = parseInt(item.quantity)
-      return total + (price * quantity)
-    },0);
-
-    const line_items = cart.products.map((item) => ({
-      price_data:{
-        currency: 'inr',
-        product_data: {
-          name : item.productSchema.name,
-          image : [item.productSchema.image],
-        },
-        unit_amount: Math.round(item.productSchema.price * 100),
-      },
-      quantity : item.quantity
-    }));
-     //create a session in stripe
-    const stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY)
-
-    const session = await stripeClient.checkout.sessions.create({
-      payment_method_types: ['card'],
-      line_items: line_items,
-      mode: 'payment',
-      ui_mode:'embedded',
-      // return_url: `${process.env.FRONTEND_URL}/CheckoutSuccess/{}`
-    })
-
-    //Create a new order
-    const newOrder = new orderSchema({
-      userId,
-      productSchema : cart.productSchema.map((item) => ({
-        
-      }))
-    })
-  }catch{
-
+  const { userId } = req.body;
+  if (!userId) {
+    return next(new customError("User not Authenticated", 401));
   }
-}
 
+  const cart = await cartSchema
+    .findOne({
+      userId: userId,
+    })
+    .populate("products.productId");
 
+  if (!cart) {
+    return next(new customError("Cart data not founded", 404));
+  }
 
+  const totalPrice = cart.products.reduce((total, item) => {
+    const price = parseFloat(item.productId.price);
+    const quantity = parseInt(item.quantity);
+    return total + price * quantity;
+  }, 0);
 
+  const line_items = cart.products.map((item) => ({
+    price_data: {
+      currency: "inr",
+      product_data: {
+        name: item.productId.name,
+        images: [item.productId.image],
+      },
+      unit_amount: Math.round(item.productId.price * 100),
+    },
+    quantity: item.quantity,
+  }));
+  //create a session in stripe
+  const stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+  const session = await stripeClient.checkout.sessions.create({
+    payment_method_types: ["card"],
+    line_items: line_items,
+    mode: "payment",
+    ui_mode: "embedded",
+    return_url: `${process.env.FRONTEND_URL}/CheckoutSuccess/{CHECKOUT_SESSION_ID}`,
+  });
+
+  //Create a new order
+  const newOrder = new orderSchema({
+    userId,
+    products: cart.products.map((item) => ({
+      productId: item.productId,
+      quantity: item.quantity,
+    })),
+    sessionId: session.id,
+    totalAmount: totalPrice,
+    paymentStatus: "pending",
+  });
+
+  const savedOrder = await newOrder.save();
+  await cartSchema.findOneAndUpdate(
+    { user: userId },
+    { $set: { products: [] } }
+  );
+
+  return res.status(200).json({
+    errorcode: 0,
+    status: true,
+    message: "Order created successfully",
+    data: {
+      session: session,
+      order: savedOrder,
+      clientSecret: session.client_secret,
+      lineData: line_items,
+    },
+  });
+};
+
+//order validation
+
+const verify_order = async (req, res, next) => {
+  const { sessionId } = req.body;
+
+  if (!sessionId) {
+    return next(new customError("Order ID is required", 400));
+  }
+
+  const order = await orderSchema.findOne({ sessionId });
+  if (!order) {
+    return next(new customError("Order not found", 404));
+  }
+
+  // totalStatus = paymentStatus
+  if (order.totalStatus === "paid") {
+    return next(new customError("product already ordered", 400));
+  }
+
+  order.totalStatus = "Paid";
+  order.shippingStatus = "Pending";
+  const updatedOrder = await order.save();
+
+  res.status(200).json({
+    errorcode: 0,
+    status: true,
+    message: "Order verified successfully",
+    data: updatedOrder,
+  });
+};
 
 const getAllOrders = async (req, res, next) => {
   const newOrder = await orderSchema
@@ -103,15 +150,13 @@ const cancelOneOrder = async (req, res, next) => {
   if (!cancelOrder) {
     return next(customError("Order not found", 404));
   }
-  if(cancelOrder.shippingStatus === "paid") {
+  if (cancelOrder.shippingStatus === "paid") {
     return next(customError("Order is already paid", 400));
   }
   cancelOrder.shippingStatus = "Cancelled";
   res.status(200).json({
     message: "Order cancelled successfully",
-  })
+  });
 };
 
-
-
-export  { getAllOrders, getOneOrder, cancelOneOrder };
+export { getAllOrders, getOneOrder, cancelOneOrder, createOrder, verify_order };
