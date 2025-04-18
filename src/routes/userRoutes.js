@@ -24,7 +24,7 @@ router.get("/getAllProducts",tryCatch(getAllProduct))
 //order routes
 .get('/getAllOrders',user_auth,tryCatch(getAllOrders))
 .get('/getOneOrder/:id', user_auth,tryCatch(getOneOrder))
-.put('/cancelOneOrder',user_auth,tryCatch(cancelOneOrder))
+.put('/cancelOneOrder/:id',user_auth,tryCatch(cancelOneOrder))
 .post('/createOrder',user_auth,tryCatch(createOrder))
 .put('/verify_order',user_auth,tryCatch(verify_order))
 

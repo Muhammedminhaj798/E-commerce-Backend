@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 import customError from "../../utils/customErr.js";
 import orderSchema from "../../model/schema/orderSchema.js";
 import cartSchema from "../../model/schema/cartSchema.js";
-import productSchema from "../../model/schema/productSchema.js";
 import Stripe from "stripe";
 
 const createOrder = async (req, res, next) => {
@@ -148,10 +147,10 @@ const cancelOneOrder = async (req, res, next) => {
     { new: true }
   );
   if (!cancelOrder) {
-    return next(customError("Order not found", 404));
+    return next(new customError("Order not found", 404));
   }
   if (cancelOrder.shippingStatus === "paid") {
-    return next(customError("Order is already paid", 400));
+    return next(new customError("Order is already paid", 400));
   }
   cancelOrder.shippingStatus = "Cancelled";
   res.status(200).json({
