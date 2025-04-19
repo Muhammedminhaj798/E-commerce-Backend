@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 
 const productSchema = new mongoose.Schema({
-  _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
   image: { type: String, required: true, trim: true },
   name: { type: String, required: true, unique: true },
   type: { type: String, required: true },

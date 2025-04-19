@@ -7,7 +7,7 @@ import { joiUserLogin } from '../../model/joischema/validation.js';
 
 const createToken = (id, isAdmin) => {
     return jwt.sign({ id, isAdmin }, process.env.JWT_TOKEN, {
-        expiresIn: "7d",
+        expiresIn: "1d",
     });
 };
 
@@ -25,7 +25,7 @@ export const UserReg = async (req, res, next) => {
     return next(new customError(error.details[0].message, 400));
    }
 
-   const { name, email, password ,confirmpassword} = value;
+   const { name, email, password, confirmpassword} = value;
    const existUser = await User.findOne({ email });
    if (existUser) {
     return next(new customError("User already exist", 400));
@@ -47,7 +47,6 @@ export const UserReg = async (req, res, next) => {
    res.status(200).json({
     message: "User registered successfully",
     status: "success",
-    data: newUser,
    })
 }
 
@@ -63,7 +62,7 @@ const UserLogin = async (req, res, next) => {
 
     const userData = await User.findOne({ email });
     if (!userData) {
-        return next(new customError("user not found", 400));
+        return next(new customError("invalid credential", 400));
     }
     if(userData.isBlocked){
         return next(new customError("user is blocked", 400)); 
@@ -75,7 +74,7 @@ const UserLogin = async (req, res, next) => {
 
     const isMatch = await bcrypt.compare(password, userData.password);
     if (!isMatch) {
-        return next(new customError("password incorrect", 400));
+        return next(new customError("invalid credential", 400));
     }
     const token = createToken(userData._id, userData.isAdmin);
     const refreshToken = createRefreshToken(userData._id, userData.isAdmin);

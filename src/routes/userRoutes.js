@@ -5,6 +5,7 @@ import { getUSerCart, removeFromCart, updateUserCart } from "../controller/user/
 import { user_auth } from "../middleware/authentication.js";
 import { addToWishlist, getUserWishlist, removeFromWishlist } from "../controller/user/userWishlistController.js";
 import { cancelOneOrder, createOrder, getAllOrders, getOneOrder, verify_order } from "../controller/user/userOrderController.js";
+import totalUsers from "../controller/user/userlistController.js";
 
 const router = express.Router();
 //get all products/type/id/filter
@@ -27,5 +28,9 @@ router.get("/getAllProducts",tryCatch(getAllProduct))
 .put('/cancelOneOrder/:id',user_auth,tryCatch(cancelOneOrder))
 .post('/createOrder',user_auth,tryCatch(createOrder))
 .put('/verify_order',user_auth,tryCatch(verify_order))
+
+//tasks
+
+.get('/totalUsers',tryCatch(totalUsers))
 
 export default router
