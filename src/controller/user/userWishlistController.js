@@ -1,4 +1,4 @@
-import wishlistSchema from "../../model/schema/wishlistSchema.js"
+import wishlistSchema from "../../model/wishlistSchema.js"
 import customError from "../../utils/customErr.js"
 
 const getUserWishlist = async (req, res, next) => {

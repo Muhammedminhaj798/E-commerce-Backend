@@ -1,4 +1,4 @@
-import cartSchema from "../../model/schema/cartSchema.js";
+import cartSchema from "../../model/cartSchema.js";
 import customError from "../../utils/customErr.js";
 
 const getUSerCart = async (req, res, next) => {

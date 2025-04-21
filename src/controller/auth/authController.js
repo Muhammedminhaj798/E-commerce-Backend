@@ -1,9 +1,9 @@
-import User from '../../model/schema/userSchema.js'
+import User from '../../model/userSchema.js'
 import customError from '../../utils/customErr.js';
 import jwt from "jsonwebtoken";
 import bcrypt from 'bcryptjs';
-import { joiUserSchema } from '../../model/joischema/validation.js';
-import { joiUserLogin } from '../../model/joischema/validation.js';
+import { joiUserSchema } from '../../utils/validation.js';
+import { joiUserLogin } from '../../utils/validation.js';
 
 const createToken = (id, isAdmin) => {
     return jwt.sign({ id, isAdmin }, process.env.JWT_TOKEN, {
@@ -17,9 +17,7 @@ const createRefreshToken = (id, isAdmin) => {
     });
 };
 export const UserReg = async (req, res, next) => {
-
    const {value, error} = joiUserSchema.validate(req.body);
-   
    
    if (error) {
     return next(new customError(error.details[0].message, 400));

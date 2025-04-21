@@ -25,7 +25,7 @@ import customError from "../utils/customErr.js";
 
 export const user_auth = (req, res, next) => {
    
-    const authHeader = req.headers['authorization'];
+    // const authHeader = req.headers['authorization'];
     const token = req.cookies.token
 
     if (!token) {
@@ -81,6 +81,7 @@ export const user_auth = (req, res, next) => {
             });
     
             req.user = decoded;
+            res.json("access denied")
             return next();
         }
        

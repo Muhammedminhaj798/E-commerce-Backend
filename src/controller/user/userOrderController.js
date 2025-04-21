@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import customError from "../../utils/customErr.js";
-import orderSchema from "../../model/schema/orderSchema.js";
-import cartSchema from "../../model/schema/cartSchema.js";
+import orderSchema from "../../model/orderSchema.js";
+import cartSchema from "../../model/cartSchema.js";
 import Stripe from "stripe";
 
 const createOrder = async (req, res, next) => {
