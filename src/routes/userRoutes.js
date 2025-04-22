@@ -28,5 +28,4 @@ router.get("/getAllProducts",tryCatch(getAllProduct))
 .post('/createOrder',user_auth,tryCatch(createOrder))
 .put('/verify_order',user_auth,tryCatch(verify_order))
 
-
 export default router

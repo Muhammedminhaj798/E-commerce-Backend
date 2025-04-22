@@ -63,7 +63,9 @@ const createOrder = async (req, res, next) => {
   const savedOrder = await newOrder.save();
   await cartSchema.findOneAndUpdate(
     { user: userId },
-    { $set: { products: [] } }
+    { $set: { products: [] }} ,
+    {new:true},
+  
   );
 
   return res.status(200).json({
@@ -111,10 +113,15 @@ const verify_order = async (req, res, next) => {
 };
 
 const getAllOrders = async (req, res, next) => {
+  console.log(req);
+  
   const newOrder = await orderSchema
     .find({ userId: req.user.id })
     .populate("products.productId", "name price image")
     .sort({ createdAt: -1 });
+
+    console.log("dfghjkl;xc",newOrder);
+    
   if (newOrder) {
     return res.status(200).json({
       status: "success",
@@ -128,13 +135,13 @@ const getAllOrders = async (req, res, next) => {
 //get a specific order by ID
 const getOneOrder = async (req, res, next) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-    return next(customError("Invalid order ID", 400));
+    return next(new customError("Invalid order ID", 400));
   }
   const singleOrder = await orderSchema
     .findOne({ _id: req.params.id })
     .populate("products.productId", "name price image");
   if (!singleOrder) {
-    return next(customError("Order not found", 404));
+    return next(new customError("Order not found", 404));
   }
   res.status(200).json({ singleOrder });
 };
