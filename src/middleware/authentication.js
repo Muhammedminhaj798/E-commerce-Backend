@@ -71,24 +71,15 @@ export const user_auth = (req, res, next) => {
                 process.env.JWT_TOKEN,
                 { expiresIn: "1m" }
             );
-    
-           
             res.cookie('token', newToken, {
                 httpOnly: true,
                 secure: true, 
                 maxAge: 1 * 60 * 1000, 
                 sameSite: 'none'
             });
-    
             req.user = decoded;
             res.json("access denied")
             return next();
         }
-       
-
     }
-
-
 };
-
-
