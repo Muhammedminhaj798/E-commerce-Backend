@@ -1,7 +1,7 @@
 import productSchema from "../../model/productSchema.js";
 
 const getAllProduct = async (req, res) => {
-  const allProduct = await productSchema.find();
+  const allProduct = await productSchema.find({isDeleted:false});
 
   res.status(200).json({
     message: "All Product get successfully",
@@ -12,7 +12,7 @@ const getAllProduct = async (req, res) => {
 
 const getProductType = async (req, res) => {
   const type = req.params.type;
-  const productType = await productSchema.find({ type: type });
+  const productType = await productSchema.find({ type: type ,isDeleted:false});
   res.status(200).json({
     message: "product get by type succesfully",
     status: "success",
@@ -33,14 +33,14 @@ const getProductById = async (req, res) => {
 const getFilterProduct = async (req, res) => {
   const { lowerprice,upperprice, brand, type } = req.body;
   if (brand) {
-    const product = await productSchema.find({brand : brand});
+    const product = await productSchema.find({brand : brand,isDeleted:false});
     res.status(200).json({
       error: false,
       product,
     });
   }
   if (type) {
-    const product = await productSchema.find({type : type});
+    const product = await productSchema.find({type : type,isDeleted:false});
     res.status(200).json({
       error: false,
       product,
@@ -48,7 +48,7 @@ const getFilterProduct = async (req, res) => {
   }
   if (lowerprice && upperprice) {
     const products = await productSchema.find({
-      price: { $gte: lowerprice, $lte: upperprice }
+      price: { $gte: lowerprice, $lte: upperprice },isDeleted:false
     });
     return res.status(200).json({
       error: false,
@@ -62,7 +62,7 @@ const getSearchProduct = async (req, res) => {
   
     if (search) {
       const products = await productSchema.find({
-        name: { $regex: search, $options: 'i' }
+        name: { $regex: search, $options: 'i' },isDeleted:false
       });
   
       return res.status(200).json({

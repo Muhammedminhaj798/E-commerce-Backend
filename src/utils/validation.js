@@ -23,3 +23,14 @@ export const joiUserLogin = Joi.object({
     "any.required": "Password is required",
   }),
 });
+
+export const joiProductSchema = Joi.object({
+  name : Joi.string().required(),
+  type : Joi.string().required(),
+  price : Joi.number().min(0).required(),
+  description : Joi.string().required(),
+  brand : Joi.string().required(),
+  rating : Joi.number().min(0).max(5),
+  qty:Joi.number().min(1).required(),
+  review : Joi.string()
+})
