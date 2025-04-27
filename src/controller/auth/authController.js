@@ -23,14 +23,10 @@ export const UserReg = async (req, res, next) => {
     return next(new customError(error.details[0].message, 400));
    }
 
-   const { name, email, password, confirmpassword} = value;
+   const { name, email, password} = value;
    const existUser = await User.findOne({ email });
    if (existUser) {
     return next(new customError("User already exist", 400));
-   }
-
-   if (password !== confirmpassword) {
-    return next(new customError("Passwords do not match", 400)); 
    }
 
    const salt = await bcrypt.genSalt(10);

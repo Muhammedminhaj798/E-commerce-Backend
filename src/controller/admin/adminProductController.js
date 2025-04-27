@@ -83,6 +83,19 @@ const editProduct = async (req, res, next) => {
   const image = req.file.path;
   const { error, value } = await joiProductSchema.validate(req.body);
   const { name, type, price, description, brand, qty } = value;
+  const productId = req.params.id;
+  const updatedProduct = await productSchema.findByIdAndUpdate(
+    productId,
+    { name, type, price, description, brand, qty, image },
+    { new: true }
+  );
+
+  res.status(200).json({
+    message:"product details updated successfully",
+    status:"success",
+    data:updatedProduct
+  })
 };
 
-export { getAllProducts, addProduct, getProductById, deleteProduct };
+
+export { getAllProducts, addProduct, getProductById, deleteProduct,editProduct };
