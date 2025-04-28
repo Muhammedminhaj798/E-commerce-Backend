@@ -11,11 +11,11 @@ const createToken = (id, isAdmin) => {
     });
 };
 
-const createRefreshToken = (id, isAdmin) => {
-    return jwt.sign({ id,isAdmin  }, process.env.JWT_REFRESH_TOKEN, {
-        expiresIn: "14d",
-    });
-};
+// const createRefreshToken = (id, isAdmin) => {
+//     return jwt.sign({ id,isAdmin  }, process.env.JWT_REFRESH_TOKEN, {
+//         expiresIn: "14d",
+//     });
+// };
 export const UserReg = async (req, res, next) => {
    const {value, error} = joiUserSchema.validate(req.body);
    
@@ -71,7 +71,6 @@ const UserLogin = async (req, res, next) => {
         return next(new customError("invalid credential", 400));
     }
     const token = createToken(userData._id, userData.isAdmin);
-    const refreshToken = createRefreshToken(userData._id, userData.isAdmin);
 
     res.cookie("token", token, {
        httpOnly: true,
@@ -80,18 +79,18 @@ const UserLogin = async (req, res, next) => {
        maxAge: 7 * 24 * 60 * 60 * 1000,
     })
     
-    res.cookie("refreshToken", refreshToken, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "lax",
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-     })
+    // res.cookie("refreshToken", refreshToken, {
+    //     httpOnly: true,
+    //     secure: true,
+    //     sameSite: "lax",
+    //     maxAge: 7 * 24 * 60 * 60 * 1000,
+    //  })
 
     res.status(200).json({
         message: "User logged in successfully",
         isAdmin: userData.isAdmin,
         token,
-        refreshToken,
+        // refreshToken,
         data: userData,
     });
     
@@ -117,4 +116,6 @@ const home = async (req, res, next) => {
         status: "success",
     }); 
 }
+
+
 export {  UserLogin, userLogout,home };

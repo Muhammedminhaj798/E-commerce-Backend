@@ -1,5 +1,5 @@
-import jwt from "jsonwebtoken";
-import customError from "../utils/customErr.js";
+// import jwt from "jsonwebtoken";
+// import customError from "../utils/customErr.js";
 
 // const verifyToken = (req, res, next) => {
 //     try {
@@ -23,63 +23,91 @@ import customError from "../utils/customErr.js";
 
 // export default verifyToken;
 
-export const user_auth = (req, res, next) => {
+// export const user_auth = (req, res, next) => {
    
-    // const authHeader = req.headers['authorization'];
-    const token = req.cookies.token
+//     // const authHeader = req.headers['authorization'];
+//     const token = req.cookies.token
+// console.log('token ',token);
+    
+
+//     if (!token) {
+       
+//         const refreshmentToken = req.cookies?.refreshToken;
+//         console.log('ff',refreshmentToken);
+        
+//         if (!refreshmentToken) {
+//             return next(new customError('No access or refreshment token provided',400))
+//         }
+
+//         const decoded = jwt.verify(refreshmentToken, process.env.JWT_TOKEN);
+        
+//             const newToken = jwt.sign(
+//             { id: decoded.id, username: decoded.username, email: decoded.email },
+//             process.env.JWT_TOKEN,
+//             { expiresIn: "1m" }
+//         );
+
+//          res.cookie('token', newToken, {
+//             httpOnly: true,
+//             secure: true, 
+//             maxAge: 1 * 60 * 1000,
+//             sameSite: 'none'
+//         });
+
+//         req.user = decoded;
+//         return next();
+//     } else {
+        
+//         try {
+//             const decoded = jwt.verify(token, process.env.JWT_TOKEN);
+           
+//             req.user = decoded;
+//             return next();
+//         } catch (error) {
+//             const refreshmentToken=req.cookies?.refreshToken
+//             if (!refreshmentToken){
+//                 return next(new customError('No access or refreshment token provided',400))
+//             }
+//             const decoded=jwt.verify(refreshmentToken,process.env.JWT_TOKEN)
+//             const newToken = jwt.sign(
+//                 { id: decoded.id, username: decoded.username, email: decoded.email },
+//                 process.env.JWT_TOKEN,
+//                 { expiresIn: "1m" }
+//             );
+//             res.cookie('token', newToken, {
+//                 httpOnly: true,
+//                 secure: true, 
+//                 maxAge: 1 * 60 * 1000, 
+//                 sameSite: 'none'
+//             });
+//             req.user = decoded;
+//             res.json("access denied")
+//             return next();
+//         }
+//     }
+// };
+
+// authentication.js
+
+import jwt from 'jsonwebtoken';
+import customError from "../utils/customErr.js";
+
+export const user_auth = (req, res, next) => {
+  try {
+    const token = req.cookies.token; // Token from cookie
+
 
     if (!token) {
-       
-        const refreshmentToken = req.cookies?.refreshToken;
-        
-        if (!refreshmentToken) {
-            return next(new customError('No access or refreshment token provided',400))
-        }
-
-        const decoded = jwt.verify(refreshmentToken, process.env.JWT_TOKEN);
-        
-            const newToken = jwt.sign(
-            { id: decoded.id, username: decoded.username, email: decoded.email },
-            process.env.JWT_TOKEN,
-            { expiresIn: "1m" }
-        );
-
-         res.cookie('token', newToken, {
-            httpOnly: true,
-            secure: true, 
-            maxAge: 1 * 60 * 1000,
-            sameSite: 'none'
-        });
-
-        req.user = decoded;
-        return next();
-    } else {
-        
-        try {
-            const decoded = jwt.verify(token, process.env.JWT_TOKEN);
-           
-            req.user = decoded;
-            return next();
-        } catch (error) {
-            const refreshmentToken=req.cookies?.refreshToken
-            if (!refreshmentToken){
-                return next(new customError('No access or refreshment token provided',400))
-            }
-            const decoded=jwt.verify(refreshmentToken,process.env.JWT_TOKEN)
-            const newToken = jwt.sign(
-                { id: decoded.id, username: decoded.username, email: decoded.email },
-                process.env.JWT_TOKEN,
-                { expiresIn: "1m" }
-            );
-            res.cookie('token', newToken, {
-                httpOnly: true,
-                secure: true, 
-                maxAge: 1 * 60 * 1000, 
-                sameSite: 'none'
-            });
-            req.user = decoded;
-            res.json("access denied")
-            return next();
-        }
+      return next(new customError('Access token not found', 400));
     }
+
+    const decoded = jwt.verify(token, process.env.JWT_TOKEN); // ✅ verify using JWT_SECRET
+
+    req.user = decoded; // user info set to request
+    return next();
+
+  } catch (error) {
+    console.error('JWT Error:', error);
+    return next(new customError('Invalid or expired access token', 401));
+  }
 };

@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import cartSchema from "../../model/cartSchema.js";
 import customError from "../../utils/customErr.js";
 
@@ -57,46 +58,22 @@ const updateUserCart = async (req, res, next) => {
   });
 };
 
-const removeFromCart = async (req, res, next) => {
- const cart = await cartSchema.findOneAndUpdate(
-    { userId: req.user.id, "products.productId": req.body.productId },
-    {
-      $pull: {
-        products: { productId: req.body.productId }
-      }
-    },
-    { new: true }
-  );
+const removeFromCart = async (req,res,next) => {
 
-  if (cart) {
-    res.status(200).json({
-      status: "success",
-      message: "Product removed from cart",
-    });
-  } else {
-   res.status(404).json({
-      status: "fail",
-      message: "Product not found in cart",
-    });
-  } 
-}
+  const userId = req.user.id
+  const {id} = req.params
 
-const takingApi = async (req , res ,next) => {
-  const title = await fetch("https://jsonplaceholder.typicode.com/posts")
-  if(!title.ok){
-    res.status(500).json({
-      status:"error",
-    })
+  const datas = await cartSchema.findOne({ userId: userId }).populate("products.productId")
+  if (!datas) {
+      return next(new customError("cart not found",404))
+
   }
-  const response = await title.json()
-  
- 
-const hello = response.slice(0,10).map(response => response.title)
-res.status(200).json({
-  status:"successfull",
-  hello
-})
+  const productIndex = datas.products.findIndex(pro => pro.productId._id == id)
+  datas.products.splice(productIndex, 1)
+  await datas.save()
+  res.status(200).json({ message: "Product removed from cart", products: datas.products || [] });
 }
 
-export { getUSerCart, updateUserCart, removeFromCart ,takingApi };
+
+export { getUSerCart, updateUserCart, removeFromCart };
 

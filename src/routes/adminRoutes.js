@@ -3,6 +3,7 @@ import tryCatch from "../middleware/tryCatch.js"
 import { addProduct, deleteProduct, editProduct, getAllProducts, getProductById } from "../controller/admin/adminProductController.js"
 import { viewAllUsers, viewUserById } from "../controller/admin/adminUsersController.js"
 import upload from "../middleware/imageupload.js"
+import { getAdmiOrderDetails } from "../controller/admin/adminOrderController.js"
 
 const adminRouter = express.Router()
 
@@ -13,6 +14,7 @@ adminRouter
 .get("/admingetProduct/:id",tryCatch(getProductById))
 .put("/productDeleted/:id",tryCatch(deleteProduct))
 .put("/editProduct/:id",upload.single('image'),tryCatch(editProduct))
+.get("/getOrderDetails",tryCatch(getAdmiOrderDetails))
 
 //view all users/get a specific user
 .get("/usersList",tryCatch(viewAllUsers))
