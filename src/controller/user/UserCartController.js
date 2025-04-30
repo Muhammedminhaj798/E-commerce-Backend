@@ -23,8 +23,6 @@ const getUSerCart = async (req, res, next) => {
 
 const updateUserCart = async (req, res, next) => {
   const { productId, quantity } = req.body;
-  
-  
 
   if (quantity < 1) {
     return next(customError(`invalid quantity ${quantity}`, 400));
@@ -58,22 +56,21 @@ const updateUserCart = async (req, res, next) => {
   });
 };
 
-const removeFromCart = async (req,res,next) => {
+const removeFromCart = async (req, res, next) => {
+  const { id } = req.params;
+  const cartItem = await cartSchema.findOneAndUpdate(
+    {
+      userId: req.user.id,
+    },
+    { $pull: { products: { _id: id } } },
+    { new: true }
+  );
 
-  const userId = req.user.id
-  const {id} = req.params
-
-  const datas = await cartSchema.findOne({ userId: userId }).populate("products.productId")
-  if (!datas) {
-      return next(new customError("cart not found",404))
-
+  if (cartItem) {
+    res.status(200).json({ message: "product removed from cart" });
+  } else {
+    res.status(404).json({ message: "cart not found" });
   }
-  const productIndex = datas.products.findIndex(pro => pro.productId._id == id)
-  datas.products.splice(productIndex, 1)
-  await datas.save()
-  res.status(200).json({ message: "Product removed from cart", products: datas.products || [] });
-}
-
+};
 
 export { getUSerCart, updateUserCart, removeFromCart };
-

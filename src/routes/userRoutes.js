@@ -16,7 +16,7 @@ router.get("/getAllProducts",tryCatch(getAllProduct))
 //cart routes
 .get("/getUserCart",user_auth,tryCatch(getUSerCart))
 .post("/updateUserCart",user_auth,tryCatch(updateUserCart))
-.delete("/removeFromCart/:id",user_auth,tryCatch(removeFromCart))
+.patch("/removeFromCart/:id",user_auth,tryCatch(removeFromCart))
 //wishlist routes
 .get("/getUserWishlist",user_auth,tryCatch(getUserWishlist))
 .post("/addToWishlist",user_auth,tryCatch(addToWishlist))
