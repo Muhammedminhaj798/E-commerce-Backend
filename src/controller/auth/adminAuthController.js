@@ -45,12 +45,26 @@ const adminLogin = async(req,res,next) => {
         maxAge: 7 * 24 * 60 * 1000,
     })
 
+    
     res.status(200).json({
         message: "user logged in successfully",
         isAdmin : adminData.isAdmin,
         token,
-        data:adminData,
+        data:{name:adminData.name,
+            email:adminData.email},
     })
 }
 
-export default adminLogin
+const adminLogout = async(req,res,next) => {
+    res.clearCookie("token", {
+        httpOnly: true,
+        secure: true, // only for HTTPS — remove if using HTTP in development
+        sameSite: "strict",
+      });
+
+    res.status(200).json({
+        message:"Admin logged out successfully"
+    })
+}
+
+export  {adminLogin, adminLogout}
