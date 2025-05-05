@@ -2,7 +2,7 @@ import orderSchema from "../../model/orderSchema.js";
 import customError from "../../utils/customErr.js";
 
 const getAdmiOrderDetails = async(req,res,next) =>{
-    const orderDetails = await orderSchema.find()
+    const orderDetails = await orderSchema.find().populate("products.productId").populate("userId")
     if(!orderDetails){
         return next(new customError("not order found", 404))
     }

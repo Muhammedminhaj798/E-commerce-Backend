@@ -45,7 +45,7 @@ const createOrder = async (req, res, next) => {
     line_items: line_items,
     mode: "payment",
     ui_mode: "embedded",
-    return_url: `${process.env.FRONTEND_URL}/CheckoutSuccess/{CHECKOUT_SESSION_ID}`,
+    return_url: `${process.env.FRONTEND_URL}CheckoutSuccess/{CHECKOUT_SESSION_ID}`,
   });
 
   //Create a new order

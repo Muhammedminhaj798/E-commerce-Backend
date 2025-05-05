@@ -1,7 +1,7 @@
 import express from "express";
 import tryCatch from "../middleware/tryCatch.js";
 import { getAllProduct, getFilterProduct, getProductById, getProductType, getSearchProduct } from "../controller/user/userProductController.js";
-import { getUSerCart, removeFromCart, updateUserCart } from "../controller/user/UserCartController.js";
+import { getUSerCart, incrementProduct, removeFromCart, updateUserCart } from "../controller/user/UserCartController.js";
 import { user_auth } from "../middleware/authentication.js";
 import { addToWishlist, getUserWishlist, removeFromWishlist } from "../controller/user/userWishlistController.js";
 import { cancelOneOrder, createOrder, getAllOrders, getOneOrder, verify_order } from "../controller/user/userOrderController.js";
@@ -17,6 +17,7 @@ router.get("/getAllProducts",tryCatch(getAllProduct))
 .get("/getUserCart",user_auth,tryCatch(getUSerCart))
 .post("/updateUserCart",user_auth,tryCatch(updateUserCart))
 .patch("/removeFromCart/:id",user_auth,tryCatch(removeFromCart))
+.patch("/incrementProduct",user_auth,tryCatch(incrementProduct))
 //wishlist routes
 .get("/getUserWishlist",user_auth,tryCatch(getUserWishlist))
 .post("/addToWishlist",user_auth,tryCatch(addToWishlist))
