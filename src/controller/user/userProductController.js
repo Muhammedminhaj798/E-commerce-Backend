@@ -22,7 +22,9 @@ const getProductType = async (req, res) => {
 
 const getProductById = async (req, res) => {
   const id = req.params.id;
+  
   const productId = await productSchema.findById(id);
+  // console.log(productId)
   res.status(200).json({
     message: "product get by id succesfully",
     status: "success",

@@ -62,7 +62,7 @@ const createOrder = async (req, res, next) => {
 
   const savedOrder = await newOrder.save();
   await cartSchema.findOneAndUpdate(
-    { user: userId },
+    { userId: userId },
     { $set: { products: [] }} ,
     {new:true},
   

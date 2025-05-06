@@ -3,7 +3,7 @@ import customError from "../../utils/customErr.js";
 import { joiProductSchema } from "../../utils/validation.js";
 
 const getAllProducts = async (req, res, next) => {
-  const products = await productSchema.find({ isDeleted: false });
+  const products = await productSchema.find();
 
   if (!products) {
     return next(new customError("products not found", 404));
@@ -17,7 +17,9 @@ const getAllProducts = async (req, res, next) => {
 
 const getProductById = async (req, res, next) => {
   const _id = req.params.id;
-  const productId = await productSchema.findById({ _id, isDeleted: false });
+  const productId = await productSchema.findOne({ _id, isDeleted: false });
+  console.log(productId);
+  
   if (!productId) {
     return next(
       res.status(400).json({
