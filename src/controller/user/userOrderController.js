@@ -113,14 +113,11 @@ const verify_order = async (req, res, next) => {
 };
 
 const getAllOrders = async (req, res, next) => {
-  console.log(req);
   
   const newOrder = await orderSchema
     .find({ userId: req.user.id })
     .populate("products.productId", "name price image")
     .sort({ createdAt: -1 });
-
-    console.log("dfghjkl;xc",newOrder);
     
   if (newOrder) {
     return res.status(200).json({
@@ -164,5 +161,7 @@ const cancelOneOrder = async (req, res, next) => {
     message: "Order cancelled successfully",
   });
 };
+
+
 
 export { getAllOrders, getOneOrder, cancelOneOrder, createOrder, verify_order };
