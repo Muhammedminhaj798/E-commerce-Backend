@@ -9,7 +9,7 @@ const productSchema = new mongoose.Schema(
     brand: { type: String, required: true },
     description: { type: String, required: true },
     rating: { type: Number, required: true, default: 0, min: 0, max: 5 },
-    qty: { type: Number, required: true, default: 1 },
+    qty: { type: Number, default: 1 },
     reviews: { type: Number, default: 0, min: 0 },
     isDeleted: { type: Boolean, default: false },
   },

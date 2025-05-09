@@ -44,7 +44,7 @@ const addProduct = async (req, res, next) => {
     return next(new customError(error.message));
   }
 
-  const { name, type, price, description, brand, rating, reviews, qty } = value;
+  const { name, type, price, description, brand,qty } = value;
 
   const newProduct = await new productSchema({
     name,
@@ -52,8 +52,6 @@ const addProduct = async (req, res, next) => {
     price,
     description,
     brand,
-    rating,
-    reviews,
     image,
     qty,
   });
