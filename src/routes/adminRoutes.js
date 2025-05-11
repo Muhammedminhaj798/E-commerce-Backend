@@ -4,6 +4,8 @@ import { addProduct, deleteProduct, editProduct, getAllProducts, getProductById 
 import { viewAllUsers, viewUserById } from "../controller/admin/adminUsersController.js"
 import upload from "../middleware/imageupload.js"
 import { getAdmiOrderDetails } from "../controller/admin/adminOrderController.js"
+import { updateOrderStatus } from "../controller/admin/updateOrderStatus.js"
+import { blockUser, unblockUser } from "../controller/admin/blockedUSerController.js"
 
 const adminRouter = express.Router()
 
@@ -15,6 +17,12 @@ adminRouter
 .put("/productDeleted/:id",tryCatch(deleteProduct))
 .put("/editProduct/:id",upload.single('image'),tryCatch(editProduct))
 .get("/getOrderDetails",tryCatch(getAdmiOrderDetails))
+.put('/orderStatus/:orderId', tryCatch(updateOrderStatus))
+
+//users routes
+.put('/user/:id/block',tryCatch(blockUser))
+.put('/user/:id/unblock',tryCatch(unblockUser))
+.get('/user/blocked', tryCatch(unblockUser))
 
 //view all users/get a specific user
 .get("/usersList",tryCatch(viewAllUsers))
