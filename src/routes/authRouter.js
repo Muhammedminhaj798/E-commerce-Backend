@@ -7,12 +7,16 @@ import  { adminLogin, adminLogout } from "../controller/auth/adminAuthController
 const authRouter = express.Router();
 
 authRouter
-//userAuthRoutes
+
+   //userAuthRoutes
+
    .post("/register",tryCatch(UserReg))
    .post("/login",tryCatch(UserLogin))
    .delete("/logout",tryCatch(userLogout))
    .get('/home',user_auth, tryCatch(home))
-//adminAuthRoutes
+
+   //adminAuthRoutes
+
    .post("/adminLogin",tryCatch(adminLogin))
    .delete("/adminlogout",tryCatch(adminLogout))
 export default authRouter;
