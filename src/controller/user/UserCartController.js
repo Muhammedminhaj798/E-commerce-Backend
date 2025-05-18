@@ -73,34 +73,42 @@ const removeFromCart = async (req, res, next) => {
   }
 };
 
-const incrementProduct = async(req,res,next) => {
+const incrementProduct = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const { productId, action } = req.body;
+    const cartData = await cartSchema.findOne({ userId: userId });
 
-try {
-  const userId = req.user.id
-const { productId, action } = req.body
-const cartData = await cartSchema.findOne({ userId: userId })
-
-if (!cartData) {
-  return res.status(404).json({message:"Cart data not found"})
-}
-const productData = cartData.products.find(prod => prod.productId._id == productId)
-if (!productData) {
-  return res.status(404).json({message:"product not found in cart"})}
-if (action === "increment") {
-    productData.quantity += 1
-} else if (action === "decrement") {
-    if (productData.quantity > 1) {
-        productData.quantity -= 1
+    if (!cartData) {
+      return res.status(404).json({ message: "Cart data not found" });
     }
-} else {
-  return res.status(404).json({message:"Invalid action for updating quantity"})}
-await cartData.save()
-const updatedCart = await cartSchema.findOne({ userId: userId }).populate("products.productId")
-res.status(200).json({ products: updatedCart.products || [] })
-} catch (error) {
-  return res.status(404).json({message:error})}
 
+    const productData = cartData.products.find(
+      (prod) => prod.productId._id == productId
+    );
 
-}
+    if (!productData) {
+      return res.status(404).json({ message: "product not found in cart" });
+    }
+    if (action === "increment") {
+      productData.quantity += 1;
+    } else if (action === "decrement") {
+      if (productData.quantity > 1) {
+        productData.quantity -= 1;
+      }
+    } else {
+      return res
+        .status(404)
+        .json({ message: "Invalid action for updating quantity" });
+    }
+    await cartData.save();
+    const updatedCart = await cartSchema
+      .findOne({ userId: userId })
+      .populate("products.productId");
+    res.status(200).json({ products: updatedCart.products || [] });
+  } catch (error) {
+    return res.status(404).json({ message: error });
+  }
+};
 
 export { getUSerCart, updateUserCart, removeFromCart, incrementProduct };
