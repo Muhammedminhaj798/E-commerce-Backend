@@ -63,9 +63,8 @@ const createOrder = async (req, res, next) => {
   const savedOrder = await newOrder.save();
   await cartSchema.findOneAndUpdate(
     { userId: userId },
-    { $set: { products: [] }} ,
-    {new:true},
-  
+    { $set: { products: [] } },
+    { new: true }
   );
 
   return res.status(200).json({
@@ -113,12 +112,11 @@ const verify_order = async (req, res, next) => {
 };
 
 const getAllOrders = async (req, res, next) => {
-  
   const newOrder = await orderSchema
     .find({ userId: req.user.id })
     .populate("products.productId", "name price image")
     .sort({ createdAt: -1 });
-    
+
   if (newOrder) {
     return res.status(200).json({
       status: "success",
@@ -161,7 +159,5 @@ const cancelOneOrder = async (req, res, next) => {
     message: "Order cancelled successfully",
   });
 };
-
-
 
 export { getAllOrders, getOneOrder, cancelOneOrder, createOrder, verify_order };
