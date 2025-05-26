@@ -31,8 +31,7 @@ adminRouter
   .get("/getOrderDetails", tryCatch(getAdmiOrderDetails))
   .put("/orderStatus/:orderId", tryCatch(updateOrderStatus))
 
-  //users routes
-  .put("/user/:id/block", tryCatch(blockUser))
+  //users routesh(blockUser))
   .put("/user/:id/unblock", tryCatch(unblockUser))
   .get("/user/blocked", tryCatch(unblockUser))
 
