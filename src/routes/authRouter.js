@@ -15,7 +15,6 @@ import {
 const authRouter = express.Router();
 
 authRouter
-
   //userAuthRoutes
   .post("/register", tryCatch(UserReg))
   .post("/login", tryCatch(UserLogin))
