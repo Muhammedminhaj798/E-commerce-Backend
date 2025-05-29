@@ -6,12 +6,9 @@ const getAllProducts = async (req, res, next) => {
   const products = await productSchema.find();
 
   if (!products) {
-
     return next(new customError("products not found", 404));
-
   }
   res.status(200).json({
-    
     status: "success",
     message: "All product get successfully",
     data: products,
@@ -22,7 +19,7 @@ const getProductById = async (req, res, next) => {
   const _id = req.params.id;
   const productId = await productSchema.findOne({ _id, isDeleted: false });
   console.log(productId);
-  
+
   if (!productId) {
     return next(
       res.status(400).json({
@@ -47,7 +44,7 @@ const addProduct = async (req, res, next) => {
     return next(new customError(error.message));
   }
 
-  const { name, type, price, description, brand,qty } = value;
+  const { name, type, price, description, brand, qty } = value;
 
   const newProduct = await new productSchema({
     name,
@@ -94,12 +91,16 @@ const editProduct = async (req, res, next) => {
   );
 
   res.status(200).json({
-    message:"product details updated successfully",
-    status:"success",
-    data:updatedProduct
-  })
+    message: "product details updated successfully",
+    status: "success",
+    data: updatedProduct,
+  });
 };
 
-
-
-export { getAllProducts, addProduct, getProductById, deleteProduct,editProduct };
+export {
+  getAllProducts,
+  addProduct,
+  getProductById,
+  deleteProduct,
+  editProduct,
+};
