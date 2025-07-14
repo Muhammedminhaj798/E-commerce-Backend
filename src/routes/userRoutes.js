@@ -26,6 +26,8 @@ import {
   getOneOrder,
   verify_order,
 } from "../controller/user/userOrderController.js";
+import { updateProfilePicture } from "../controller/user/userProfile.js";
+import upload from "../middleware/imageupload.js";
 
 const router = express.Router();
 //get all products/type/id/filter
@@ -49,6 +51,9 @@ router
   .get("/getOneOrder/:id", user_auth, tryCatch(getOneOrder))
   .put("/cancelOneOrder/:id", user_auth, tryCatch(cancelOneOrder))
   .post("/createOrder", user_auth, tryCatch(createOrder))
-  .put("/verify_order", user_auth, tryCatch(verify_order));
+  .put("/verify_order", user_auth, tryCatch(verify_order))
+
+  //update profile
+  .post('/profile-picture',user_auth,upload.single('image'), updateProfilePicture)
 
 export default router;

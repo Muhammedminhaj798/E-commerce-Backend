@@ -3,7 +3,6 @@ import customError from "../../utils/customErr.js";
 
 const viewAllUsers = async (req, res, next) => {
   const users = await User.find().select("name email");
-
   if (!users) {
     return next(new customError("users not found", 404));
   }

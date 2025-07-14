@@ -10,7 +10,7 @@ const getAllProducts = async (req, res, next) => {
   }
   res.status(200).json({
     status: "success",
-    message: "All product get successfully",
+    message: "All product get successfully", 
     data: products,
   });
 };
