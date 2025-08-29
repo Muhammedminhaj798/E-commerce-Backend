@@ -48,7 +48,6 @@ const createOrder = async (req, res, next) => {
     return_url: `${process.env.FRONTEND_URL}CheckoutSuccess/{CHECKOUT_SESSION_ID}`,
   });
 
-  //Create a new order
   const newOrder = new orderSchema({
     userId,
     products: cart.products.map((item) => ({
