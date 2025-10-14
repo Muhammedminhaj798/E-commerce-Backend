@@ -19,7 +19,6 @@ const adminLogin = async(req,res,next) => {
             status: "Failed",
         })
     }
-
     const {email, password} = value;
 
     const adminData = await User.findOne({ email })
