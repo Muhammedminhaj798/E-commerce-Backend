@@ -20,7 +20,6 @@ const adminLogin = async(req,res,next) => {
         })
     }
     const {email, password} = value;
-
     const adminData = await User.findOne({ email })
     if(!adminData){
         return next(new customError("Admin not found"))
