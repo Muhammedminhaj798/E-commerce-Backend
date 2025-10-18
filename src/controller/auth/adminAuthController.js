@@ -44,7 +44,6 @@ const adminLogin = async(req,res,next) => {
         sameSite:"lax",
         maxAge: 7 * 24 * 60 * 1000,
     })
-
     
     res.status(200).json({
         message: "user logged in successfully",
