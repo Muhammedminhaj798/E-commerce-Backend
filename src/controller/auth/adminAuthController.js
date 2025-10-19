@@ -57,7 +57,7 @@ const adminLogin = async(req,res,next) => {
 const adminLogout = async(req,res,next) => {
     res.clearCookie("token", {
         httpOnly: true,
-        secure: true, // only for HTTPS — remove if using HTTP in development
+        secure: true, 
         sameSite: "strict",
       });
 
